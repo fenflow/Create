@@ -106,60 +106,33 @@ public class AllCreativeModeTabs {
 		}
 
 		private static Predicate<Item> makeExclusionPredicate() {
-			Set<Item> exclusions = new ReferenceOpenHashSet<>();
+			// By default exclude all Create items, then allow a small whitelist to remain visible.
+			Set<Item> whitelist = new ReferenceOpenHashSet<>();
 
-			List<ItemProviderEntry<?>> simpleExclusions = List.of(
-				AllItems.INCOMPLETE_PRECISION_MECHANISM,
-				AllItems.INCOMPLETE_REINFORCED_SHEET,
-				AllItems.INCOMPLETE_TRACK,
-				AllItems.CHROMATIC_COMPOUND,
-				AllItems.SHADOW_STEEL,
-				AllItems.REFINED_RADIANCE,
-				AllItems.COPPER_BACKTANK_PLACEABLE,
-				AllItems.NETHERITE_BACKTANK_PLACEABLE,
-				AllItems.MINECART_CONTRAPTION,
-				AllItems.FURNACE_MINECART_CONTRAPTION,
-				AllItems.CHEST_MINECART_CONTRAPTION,
-				AllItems.SCHEMATIC,
-				AllItems.SHOPPING_LIST,
-				AllBlocks.ANDESITE_ENCASED_SHAFT,
-				AllBlocks.BRASS_ENCASED_SHAFT,
-				AllBlocks.ANDESITE_ENCASED_COGWHEEL,
-				AllBlocks.BRASS_ENCASED_COGWHEEL,
-				AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEEL,
-				AllBlocks.BRASS_ENCASED_LARGE_COGWHEEL,
-				AllBlocks.MYSTERIOUS_CUCKOO_CLOCK,
-				AllBlocks.ELEVATOR_CONTACT,
-				AllBlocks.SHADOW_STEEL_CASING,
-				AllBlocks.REFINED_RADIANCE_CASING
-			);
+			// TODO: adjust this whitelist to the exact items you want visible.
+			whitelist.add(AllBlocks.TRACK.asItem());
+			whitelist.add(AllBlocks.TRACK_STATION.asItem());
+			whitelist.add(AllBlocks.TRACK_SIGNAL.asItem());
+			whitelist.add(AllBlocks.TRACK_OBSERVER.asItem());
+			whitelist.add(AllBlocks.WATER_WHEEL.asItem());
+			whitelist.add(AllBlocks.HAND_CRANK.asItem());
+			whitelist.add(AllBlocks.SCHEMATICANNON.asItem());
+			whitelist.add(AllBlocks.SCHEMATIC_TABLE.asItem());
 
-			List<ItemEntry<TagDependentIngredientItem>> tagDependentExclusions = List.of(
-				AllItems.CRUSHED_OSMIUM,
-				AllItems.CRUSHED_PLATINUM,
-				AllItems.CRUSHED_SILVER,
-				AllItems.CRUSHED_TIN,
-				AllItems.CRUSHED_LEAD,
-				AllItems.CRUSHED_QUICKSILVER,
-				AllItems.CRUSHED_BAUXITE,
-				AllItems.CRUSHED_URANIUM,
-				AllItems.CRUSHED_NICKEL
-			);
+			// Items from PackageStyles that were previously excluded shouldn't be shown either
+			// (they're not usually part of the core creative listing). Keep them excluded.
+			Set<Item> keepExcluded = new ReferenceOpenHashSet<>();
+			keepExcluded.addAll(PackageStyles.RARE_BOXES);
 
-			exclusions.addAll(PackageStyles.RARE_BOXES);
-
-			for (ItemProviderEntry<?> entry : simpleExclusions) {
-				exclusions.add(entry.asItem());
-			}
-
-			for (ItemEntry<TagDependentIngredientItem> entry : tagDependentExclusions) {
-				TagDependentIngredientItem item = entry.get();
-				if (item.shouldHide()) {
-					exclusions.add(entry.asItem());
-				}
-			}
-
-			return exclusions::contains;
+			return item -> {
+				if (keepExcluded.contains(item))
+					return true;
+				// If item is explicitly whitelisted, do not exclude it.
+				if (whitelist.contains(item))
+					return false;
+				// Otherwise exclude all Create items by default.
+				return true;
+			};
 		}
 
 		private static List<ItemOrdering> makeOrderings() {

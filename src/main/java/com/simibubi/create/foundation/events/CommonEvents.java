@@ -34,6 +34,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AddPackFindersEvent;
@@ -158,6 +164,32 @@ public class CommonEvents {
 		Create.TORQUE_PROPAGATOR.onLoadWorld(world);
 		Create.RAILWAYS.levelLoaded(world);
 		Create.LOGISTICS.levelLoaded(world);
+
+		// Strip all recipes at world load so items remain registered but uncraftable.
+		if (world instanceof Level) {
+			try {
+				RecipeManager rm = ((Level) world).getRecipeManager();
+				// Clear primary recipes map if exposed via access transformer
+				try {
+					Field recipesField = rm.getClass().getField("recipes");
+					Object recipesObj = recipesField.get(rm);
+					if (recipesObj instanceof Map) ((Map<?, ?>) recipesObj).clear();
+				} catch (NoSuchFieldException ignored) {}
+
+				// Clear recipes indexed by type if present (byType method)
+				try {
+					Method byType = rm.getClass().getMethod("byType", RecipeType.class);
+					// Clear common recipe types (crafting, stonecutting, smelting, etc.)
+					RecipeType<?>[] common = new RecipeType<?>[] { RecipeType.CRAFTING };
+					for (RecipeType<?> t : common) {
+						Object m = byType.invoke(rm, t);
+						if (m instanceof Map) ((Map<?, ?>) m).clear();
+					}
+				} catch (NoSuchMethodException ignored) {}
+			} catch (Throwable t) {
+				Create.LOGGER.warn("Failed to strip recipes cleanly: {}", t.toString());
+			}
+		}
 	}
 
 	@SubscribeEvent

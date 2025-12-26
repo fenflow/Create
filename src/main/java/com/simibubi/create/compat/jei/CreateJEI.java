@@ -111,6 +111,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.item.Item;
 
 @JeiPlugin
 @SuppressWarnings("unused")
@@ -123,6 +124,25 @@ public class CreateJEI implements IModPlugin {
 	private IIngredientManager ingredientManager;
 
 	public static IJeiRuntime runtime;
+
+	// JEI visibility whitelist: only these Create items will be considered when enumerating ingredients
+	private static final Set<Item> JEI_WHITELIST = new HashSet<>();
+
+	static {
+		JEI_WHITELIST.add(AllBlocks.TRACK.asItem());
+		JEI_WHITELIST.add(AllBlocks.TRACK_STATION.asItem());
+		JEI_WHITELIST.add(AllBlocks.TRACK_SIGNAL.asItem());
+		JEI_WHITELIST.add(AllBlocks.TRACK_OBSERVER.asItem());
+		JEI_WHITELIST.add(AllBlocks.WATER_WHEEL.asItem());
+		JEI_WHITELIST.add(AllBlocks.HAND_CRANK.asItem());
+		JEI_WHITELIST.add(AllBlocks.SCHEMATICANNON.asItem());
+		JEI_WHITELIST.add(AllBlocks.SCHEMATIC_TABLE.asItem());
+	}
+
+	public static boolean isVisibleInJei(ItemStack stack) {
+		if (stack == null) return false;
+		return JEI_WHITELIST.contains(stack.getItem());
+	}
 
 	private void loadCategories() {
 		allCategories.clear();
