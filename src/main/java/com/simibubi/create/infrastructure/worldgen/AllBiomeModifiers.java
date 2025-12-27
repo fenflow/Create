@@ -32,13 +32,14 @@ public class AllBiomeModifiers {
 		HolderSet<Biome> isNether = biomeLookup.getOrThrow(BiomeTags.IS_NETHER);
 
 		HolderGetter<PlacedFeature> featureLookup = ctx.lookup(Registries.PLACED_FEATURE);
-		Holder<PlacedFeature> zincOre = featureLookup.getOrThrow(AllPlacedFeatures.ZINC_ORE);
-		Holder<PlacedFeature> striatedOresOverworld = featureLookup.getOrThrow(AllPlacedFeatures.STRIATED_ORES_OVERWORLD);
-		Holder<PlacedFeature> striatedOresNether = featureLookup.getOrThrow(AllPlacedFeatures.STRIATED_ORES_NETHER);
+		// Disabled: non-whitelisted ore generation
+		// Holder<PlacedFeature> zincOre = featureLookup.getOrThrow(AllPlacedFeatures.ZINC_ORE);
+		// Holder<PlacedFeature> striatedOresOverworld = featureLookup.getOrThrow(AllPlacedFeatures.STRIATED_ORES_OVERWORLD);
+		// Holder<PlacedFeature> striatedOresNether = featureLookup.getOrThrow(AllPlacedFeatures.STRIATED_ORES_NETHER);
 
-		ctx.register(ZINC_ORE, addOre(isOverworld, zincOre));
-		ctx.register(STRIATED_ORES_OVERWORLD, addOre(isOverworld, striatedOresOverworld));
-		ctx.register(STRIATED_ORES_NETHER, addOre(isNether, striatedOresNether));
+		// ctx.register(ZINC_ORE, addOre(isOverworld, zincOre));
+		// ctx.register(STRIATED_ORES_OVERWORLD, addOre(isOverworld, striatedOresOverworld));
+		// ctx.register(STRIATED_ORES_NETHER, addOre(isNether, striatedOresNether));
 	}
 
 	private static AddFeaturesBiomeModifier addOre(HolderSet<Biome> biomes, Holder<PlacedFeature> feature) {

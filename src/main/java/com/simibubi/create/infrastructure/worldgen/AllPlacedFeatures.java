@@ -32,13 +32,14 @@ public class AllPlacedFeatures {
 
 	public static void bootstrap(BootstapContext<PlacedFeature> ctx) {
 		HolderGetter<ConfiguredFeature<?, ?>> featureLookup = ctx.lookup(Registries.CONFIGURED_FEATURE);
-		Holder<ConfiguredFeature<?, ?>> zincOre = featureLookup.getOrThrow(AllConfiguredFeatures.ZINC_ORE);
-		Holder<ConfiguredFeature<?, ?>> striatedOresOverworld = featureLookup.getOrThrow(AllConfiguredFeatures.STRIATED_ORES_OVERWORLD);
-		Holder<ConfiguredFeature<?, ?>> striatedOresNether = featureLookup.getOrThrow(AllConfiguredFeatures.STRIATED_ORES_NETHER);
+		// Disabled: non-whitelisted ore generation
+		// Holder<ConfiguredFeature<?, ?>> zincOre = featureLookup.getOrThrow(AllConfiguredFeatures.ZINC_ORE);
+		// Holder<ConfiguredFeature<?, ?>> striatedOresOverworld = featureLookup.getOrThrow(AllConfiguredFeatures.STRIATED_ORES_OVERWORLD);
+		// Holder<ConfiguredFeature<?, ?>> striatedOresNether = featureLookup.getOrThrow(AllConfiguredFeatures.STRIATED_ORES_NETHER);
 
-		register(ctx, ZINC_ORE, zincOre, placement(CountPlacement.of(8), -63, 70));
-		register(ctx, STRIATED_ORES_OVERWORLD, striatedOresOverworld, placement(RarityFilter.onAverageOnceEvery(18), -30, 70));
-		register(ctx, STRIATED_ORES_NETHER, striatedOresNether, placement(RarityFilter.onAverageOnceEvery(18), 40, 90));
+		// register(ctx, ZINC_ORE, zincOre, placement(CountPlacement.of(8), -63, 70));
+		// register(ctx, STRIATED_ORES_OVERWORLD, striatedOresOverworld, placement(RarityFilter.onAverageOnceEvery(18), -30, 70));
+		// register(ctx, STRIATED_ORES_NETHER, striatedOresNether, placement(RarityFilter.onAverageOnceEvery(18), 40, 90));
 	}
 
 	private static List<PlacementModifier> placement(PlacementModifier frequency, int minHeight, int maxHeight) {

@@ -78,6 +78,7 @@ import com.simibubi.create.infrastructure.config.CRecipes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
@@ -105,6 +106,8 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmokingRecipe;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
@@ -129,14 +132,29 @@ public class CreateJEI implements IModPlugin {
 	private static final Set<Item> JEI_WHITELIST = new HashSet<>();
 
 	static {
+		// Keep this aligned with the minimal Create whitelist used for creative tabs.
+		// Note: Train Controls item id is create:controls.
 		JEI_WHITELIST.add(AllBlocks.TRACK.asItem());
 		JEI_WHITELIST.add(AllBlocks.TRACK_STATION.asItem());
 		JEI_WHITELIST.add(AllBlocks.TRACK_SIGNAL.asItem());
 		JEI_WHITELIST.add(AllBlocks.TRACK_OBSERVER.asItem());
 		JEI_WHITELIST.add(AllBlocks.WATER_WHEEL.asItem());
+		JEI_WHITELIST.add(AllBlocks.COGWHEEL.asItem());
+		JEI_WHITELIST.add(AllBlocks.LARGE_COGWHEEL.asItem());
+		JEI_WHITELIST.add(AllBlocks.SHAFT.asItem());
+		JEI_WHITELIST.add(AllItems.SCHEDULE.asItem());
+		JEI_WHITELIST.add(AllBlocks.RAILWAY_CASING.asItem());
+		JEI_WHITELIST.add(AllBlocks.TRAIN_CONTROLS.asItem());
 		JEI_WHITELIST.add(AllBlocks.HAND_CRANK.asItem());
 		JEI_WHITELIST.add(AllBlocks.SCHEMATICANNON.asItem());
 		JEI_WHITELIST.add(AllBlocks.SCHEMATIC_TABLE.asItem());
+		JEI_WHITELIST.add(AllItems.SCHEMATIC_AND_QUILL.asItem());
+		JEI_WHITELIST.add(AllItems.EMPTY_SCHEMATIC.asItem());
+		JEI_WHITELIST.add(AllItems.SCHEMATIC.asItem());
+		JEI_WHITELIST.add(AllBlocks.PORTABLE_STORAGE_INTERFACE.asItem());
+		JEI_WHITELIST.add(AllBlocks.PORTABLE_FLUID_INTERFACE.asItem());
+		JEI_WHITELIST.add(AllItems.SUPER_GLUE.asItem());
+		JEI_WHITELIST.add(AllBlocks.SEATS.get(net.minecraft.world.item.DyeColor.WHITE).asItem());
 	}
 
 	public static boolean isVisibleInJei(ItemStack stack) {
@@ -640,6 +658,38 @@ public class CreateJEI implements IModPlugin {
 	@Override
 	public void onRuntimeAvailable(IJeiRuntime runtime) {
 		CreateJEI.runtime = runtime;
+
+		// Remove Create enchantment books and fluids from JEI ingredients to keep the whitelist strict.
+		if (runtime != null) {
+			var manager = runtime.getIngredientManager();
+
+			List<ItemStack> createEnchantedBooks = manager.getAllIngredients(VanillaTypes.ITEM_STACK).stream()
+				.filter(CreateJEI::isCreateEnchantedBook)
+				.toList();
+			if (!createEnchantedBooks.isEmpty()) {
+				manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, createEnchantedBooks);
+			}
+
+			List<FluidStack> createFluids = manager.getAllIngredients(ForgeTypes.FLUID_STACK).stream()
+				.filter(fs -> ForgeRegistries.FLUIDS.getKey(fs.getFluid()) != null
+					&& Create.ID.equals(ForgeRegistries.FLUIDS.getKey(fs.getFluid()).getNamespace()))
+				.toList();
+			if (!createFluids.isEmpty()) {
+				manager.removeIngredientsAtRuntime(ForgeTypes.FLUID_STACK, createFluids);
+			}
+		}
+	}
+
+	private static boolean isCreateEnchantedBook(ItemStack stack) {
+		if (stack == null || stack.isEmpty() || stack.getItem() != Items.ENCHANTED_BOOK)
+			return false;
+		Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
+		if (enchantments.isEmpty())
+			return false;
+		return enchantments.keySet()
+			.stream()
+			.map(ForgeRegistries.ENCHANTMENTS::getKey)
+			.anyMatch(key -> key != null && Create.ID.equals(key.getNamespace()));
 	}
 
 }

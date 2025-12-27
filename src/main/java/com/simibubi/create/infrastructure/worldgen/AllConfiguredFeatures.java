@@ -32,31 +32,35 @@ public class AllConfiguredFeatures {
 		RuleTest stoneOreReplaceables = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
 		RuleTest deepslateOreReplaceables = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
 
-		List<TargetBlockState> zincTargetStates = List.of(
-			OreConfiguration.target(stoneOreReplaceables, AllBlocks.ZINC_ORE.get()
-				.defaultBlockState()),
-			OreConfiguration.target(deepslateOreReplaceables, AllBlocks.DEEPSLATE_ZINC_ORE.get()
-				.defaultBlockState())
-		);
-
-		register(ctx, ZINC_ORE, Feature.ORE, new OreConfiguration(zincTargetStates, 12));
+		// Disabled: non-whitelisted ore generation
+		// List<TargetBlockState> zincTargetStates = List.of(
+		// 	OreConfiguration.target(stoneOreReplaceables, AllBlocks.ZINC_ORE.get()
+		// 		.defaultBlockState()),
+		// 	OreConfiguration.target(deepslateOreReplaceables, AllBlocks.DEEPSLATE_ZINC_ORE.get()
+		// 		.defaultBlockState())
+		// );
+		// register(ctx, ZINC_ORE, Feature.ORE, new OreConfiguration(zincTargetStates, 12));
 
 		List<LayerPattern> overworldLayerPatterns = List.of(
-			AllLayerPatterns.SCORIA.get(),
-			AllLayerPatterns.CINNABAR.get(),
-			AllLayerPatterns.MAGNETITE.get(),
-			AllLayerPatterns.MALACHITE.get(),
-			AllLayerPatterns.LIMESTONE.get(),
-			AllLayerPatterns.OCHRESTONE.get()
+			// Disabled: non-whitelisted ore generation
+			// AllLayerPatterns.SCORIA.get(),
+			// AllLayerPatterns.CINNABAR.get(),
+			// AllLayerPatterns.MAGNETITE.get(),
+			// AllLayerPatterns.MALACHITE.get(),
+			// AllLayerPatterns.LIMESTONE.get(),
+			// AllLayerPatterns.OCHRESTONE.get()
 		);
 
-		register(ctx, STRIATED_ORES_OVERWORLD, AllFeatures.LAYERED_ORE.get(), new LayeredOreConfiguration(overworldLayerPatterns, 32, 0));
+		if (!overworldLayerPatterns.isEmpty())
+			register(ctx, STRIATED_ORES_OVERWORLD, AllFeatures.LAYERED_ORE.get(), new LayeredOreConfiguration(overworldLayerPatterns, 32, 0));
 
 		List<LayerPattern> netherLayerPatterns = List.of(
-			AllLayerPatterns.SCORIA_NETHER.get(),
-			AllLayerPatterns.SCORCHIA_NETHER.get()
+			// Disabled: non-whitelisted ore generation
+			// AllLayerPatterns.SCORIA_NETHER.get(),
+			// AllLayerPatterns.SCORCHIA_NETHER.get()
 		);
 
-		register(ctx, STRIATED_ORES_NETHER, AllFeatures.LAYERED_ORE.get(), new LayeredOreConfiguration(netherLayerPatterns, 32, 0));
+		if (!netherLayerPatterns.isEmpty())
+			register(ctx, STRIATED_ORES_NETHER, AllFeatures.LAYERED_ORE.get(), new LayeredOreConfiguration(netherLayerPatterns, 32, 0));
 	}
 }

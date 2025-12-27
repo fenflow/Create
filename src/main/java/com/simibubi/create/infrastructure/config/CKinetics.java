@@ -6,7 +6,7 @@ import net.createmod.catnip.config.ConfigBase;
 
 public class CKinetics extends ConfigBase {
 
-	public final ConfigBool disableStress = b(false, "disableStress", Comments.disableStress);
+	public final ConfigBool disableStress = b(true, "disableStress", Comments.disableStress);
 	public final ConfigInt maxBeltLength = i(20, 5, "maxBeltLength", Comments.maxBeltLength);
 	public final ConfigInt maxChainConveyorLength = i(32, 5, "maxChainConveyorLength", Comments.maxChainConveyorLength);
 	public final ConfigInt maxChainConveyorConnections = i(4, 1, "maxChainConveyorConnections", Comments.maxChainConveyorConnections);

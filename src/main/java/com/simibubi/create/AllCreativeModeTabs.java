@@ -109,15 +109,29 @@ public class AllCreativeModeTabs {
 			// By default exclude all Create items, then allow a small whitelist to remain visible.
 			Set<Item> whitelist = new ReferenceOpenHashSet<>();
 
-			// TODO: adjust this whitelist to the exact items you want visible.
+			// Minimal Create whitelist for this instance (intentionally hides most Create content)
+			whitelist.add(AllBlocks.WATER_WHEEL.asItem());
+			whitelist.add(AllBlocks.COGWHEEL.asItem());
+			whitelist.add(AllBlocks.LARGE_COGWHEEL.asItem());
+			whitelist.add(AllBlocks.SHAFT.asItem());
 			whitelist.add(AllBlocks.TRACK.asItem());
+			whitelist.add(AllItems.SCHEDULE.asItem());
+			whitelist.add(AllBlocks.RAILWAY_CASING.asItem());
+			// Note: the Train Controls block/item id is create:controls (ponder scene id is create:train_controls)
+			whitelist.add(AllBlocks.TRAIN_CONTROLS.asItem());
 			whitelist.add(AllBlocks.TRACK_STATION.asItem());
 			whitelist.add(AllBlocks.TRACK_SIGNAL.asItem());
 			whitelist.add(AllBlocks.TRACK_OBSERVER.asItem());
-			whitelist.add(AllBlocks.WATER_WHEEL.asItem());
-			whitelist.add(AllBlocks.HAND_CRANK.asItem());
 			whitelist.add(AllBlocks.SCHEMATICANNON.asItem());
 			whitelist.add(AllBlocks.SCHEMATIC_TABLE.asItem());
+			whitelist.add(AllItems.SCHEMATIC_AND_QUILL.asItem());
+			whitelist.add(AllItems.EMPTY_SCHEMATIC.asItem());
+			whitelist.add(AllItems.SCHEMATIC.asItem());
+			whitelist.add(AllBlocks.HAND_CRANK.asItem());
+			whitelist.add(AllBlocks.PORTABLE_STORAGE_INTERFACE.asItem());
+			whitelist.add(AllBlocks.PORTABLE_FLUID_INTERFACE.asItem());
+			whitelist.add(AllItems.SUPER_GLUE.asItem());
+			whitelist.add(AllBlocks.SEATS.get(DyeColor.WHITE).asItem());
 
 			// Items from PackageStyles that were previously excluded shouldn't be shown either
 			// (they're not usually part of the core creative listing). Keep them excluded.
